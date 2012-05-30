@@ -1,4 +1,4 @@
 O3D-PP-Kernel
 =============
 
-O3D Gingerbread Kernel
+O3D Gingerbread Kernel for PromethiusProject
