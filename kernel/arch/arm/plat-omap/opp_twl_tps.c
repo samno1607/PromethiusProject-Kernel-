@@ -37,7 +37,7 @@ unsigned long omap_twl_vsel_to_uv(const u8 vsel)
 		else if (vsel == 0x1)
 			return 600000;
 		else if (vsel == 0x3A)
-			return 1375000;
+			return 1350000;
 
 		if (!is_offset_valid) {
 			twl_i2c_read_u8(TWL6030_MODULE_ID0, &smps_offset, 0xE0);
@@ -48,7 +48,7 @@ unsigned long omap_twl_vsel_to_uv(const u8 vsel)
 			return ((((vsel - 1) * 125) + 7000)) * 100;
 		} else {
 			if (vsel == 0x3A)
-				return 1375000;
+				return 1350000;
 			return ((((vsel - 1) * 125) + 6000)) * 100;
 		}
 	}
@@ -71,7 +71,7 @@ u8 omap_twl_uv_to_vsel(unsigned long uv)
 			return 0x00;
 		else if (uv == 600000)
 			return 0x01;
-		else if (uv == 1375000)
+		else if (uv == 1350000)
 			return 0x3A;
 
 		if (!is_offset_valid) {
