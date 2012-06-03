@@ -176,9 +176,9 @@ static struct omap_opp_def __initdata omap44xx_opp_def_list[] = {
 	OMAP_OPP_DEF("fdif", true, 128000000, 1100000),
 
 	/* SGX OPPLP - DPLL cascading */
-	OMAP_OPP_DEF("gpu", true, 196608000, 928000),
+	OMAP_OPP_DEF("gpu", true, 153600000, 928000),
 	/* SGX OPP1 - OPP50 */
-	OMAP_OPP_DEF("gpu", true, 307200000, 950000),
+	OMAP_OPP_DEF("gpu", true, 196608000, 950000),
 	/* SGX OPP2 - OPP100 */
 	OMAP_OPP_DEF("gpu", true, 307200000, 1100000),
 
