@@ -55,7 +55,7 @@ static bool bootup_m3_with_maxclcok =1;
  */
 static struct omap_opp_def __initdata omap44xx_pre_es2_1_opp_def_list[] = {
 	/* MPU OPPLP - DPLL cascading */
-	OMAP_OPP_DEF("mpu", true, 150000000, 900000),
+	OMAP_OPP_DEF("mpu", true, 100000000, 890000),
 	/* MPU OPP1 - OPP50 */
 	OMAP_OPP_DEF("mpu", true, 300000000, 930000),
 	/* MPU OPP2 - OPP100 */
@@ -108,7 +108,7 @@ static struct omap_opp_def __initdata omap44xx_pre_es2_1_opp_def_list[] = {
 
 static struct omap_opp_def __initdata omap44xx_opp_def_list[] = {
 	/* MPU OPPLP - DPLL cascading */
-	OMAP_OPP_DEF("mpu", true, 150000000, 900000),
+	OMAP_OPP_DEF("mpu", true, 100000000, 890000),
 	/* MPU OPP1 - OPP50 */
 	OMAP_OPP_DEF("mpu", true, 300000000, 930000),
 	/* MPU OPP2 - OPP100 */
@@ -187,7 +187,7 @@ static struct omap_opp_def __initdata omap44xx_opp_def_list[] = {
 	/* HSI OPP1 - OPP50 */
 	OMAP_OPP_DEF("hsi", true, 96000000, 950000),
 	/* HSI OPP2 - OPP100 */
-	OMAP_OPP_DEF("hsi", true, 192000000, 1100000),
+	OMAP_OPP_DEF("hsi", true, 96000000, 1100000),
 };
 
 #define	L3_OPP50_RATE			100000000
