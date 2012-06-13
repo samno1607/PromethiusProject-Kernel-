@@ -36,7 +36,7 @@
 #define DPLL_REGM4XEN_ENABLE	0x1
 #define LP_196M_RATE		196608000
 #define LP_98M_RATE		98304000
-#define LP_DELAY		1000000
+#define LP_DELAY		500000
 
 static struct delayed_work	lpmode_work;
 
