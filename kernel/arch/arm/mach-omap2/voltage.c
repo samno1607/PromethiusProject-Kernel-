@@ -389,13 +389,13 @@ static struct omap_volt_data omap36xx_vdd2_volt_data[] = {
  * driver after reading the efuse.
  */
 static struct omap_volt_data omap44xx_vdd_mpu_volt_data[] = {
-	{.volt_nominal = 800000, .sr_errminlimit = 0xF4, .vp_errgain = 0x0C, .abb_type = NOMINAL_OPP},
-	{.volt_nominal = 900000, .sr_errminlimit = 0xF4, .vp_errgain = 0x0C, .abb_type = NOMINAL_OPP},
-	{.volt_nominal = 1000000, .sr_errminlimit = 0xF9, .vp_errgain = 0x16, .abb_type = NOMINAL_OPP},
-	{.volt_nominal = 1100000, .sr_errminlimit = 0xFA, .vp_errgain = 0x23, .abb_type = NOMINAL_OPP},
-	{.volt_nominal = 1200000, .sr_errminlimit = 0xFA, .vp_errgain = 0x27, .abb_type = FAST_OPP},
-	{.volt_nominal = 1300000, .sr_errminlimit = 0xFA, .vp_errgain = 0x27, .abb_type = FAST_OPP},
+	{.volt_nominal = 1005000, .sr_errminlimit = 0xF4, .vp_errgain = 0x0C, .abb_type = NOMINAL_OPP},
+	{.volt_nominal = 1025000, .sr_errminlimit = 0xF4, .vp_errgain = 0x0C, .abb_type = NOMINAL_OPP},
+	{.volt_nominal = 1200000, .sr_errminlimit = 0xF9, .vp_errgain = 0x16, .abb_type = NOMINAL_OPP},
+	{.volt_nominal = 1313000, .sr_errminlimit = 0xFA, .vp_errgain = 0x23, .abb_type = NOMINAL_OPP},
+	{.volt_nominal = 1374000, .sr_errminlimit = 0xFA, .vp_errgain = 0x27, .abb_type = FAST_OPP},
 	{.volt_nominal = 1375000, .sr_errminlimit = 0xFA, .vp_errgain = 0x27, .abb_type = FAST_OPP},
+	{.volt_nominal = 1388000, .sr_errminlimit = 0xFA, .vp_errgain = 0x27, .abb_type = FAST_OPP},
 };
 
 static struct omap_volt_data omap44xx_vdd_iva_volt_data[] = {
@@ -433,47 +433,21 @@ static struct omap_vdd_dep_info omap34xx_vdd1_dep_info[] = {
 };
 
 /* OMAP 4430 MPU Core VDD dependency table */
-//LGE_CHANGE_S [kyungyoon.kim@lge.com] 2011-10-07 for CX2 @1.2GHz
-//We Don' Use All This But Change It Till I Clean This Up
-#if defined (CONFIG_MACH_LGE_CX2)
 static struct omap_vdd_dep_volt omap44xx_vddmpu_vddcore_data[] = {
-	{.main_vdd_volt = 800000, .dep_vdd_volt = 920000},
-	{.main_vdd_volt = 900000, .dep_vdd_volt = 920000},
-	{.main_vdd_volt = 1000000, .dep_vdd_volt = 950000},
-	{.main_vdd_volt = 1100000, .dep_vdd_volt = 950000},
-	{.main_vdd_volt = 1200000, .dep_vdd_volt = 1100000},
-	{.main_vdd_volt = 1300000, .dep_vdd_volt = 1100000},
-	{.main_vdd_volt = 1375000, .dep_vdd_volt = 1100000},
-	{.main_vdd_volt = 0, .dep_vdd_volt = 0},
-};
-
-static struct omap_vdd_dep_volt omap44xx_vddiva_vddcore_data[] = {
-	{.main_vdd_volt = 920000, .dep_vdd_volt = 920000},
-	{.main_vdd_volt = 930000, .dep_vdd_volt = 950000},
-	{.main_vdd_volt = 1100000, .dep_vdd_volt = 1100000},
-	{.main_vdd_volt = 1260000, .dep_vdd_volt = 1100000},
-	{.main_vdd_volt = 1375000, .dep_vdd_volt = 1100000},
-	{.main_vdd_volt = 0, .dep_vdd_volt = 0},
-};
-#else
-static struct omap_vdd_dep_volt omap44xx_vddmpu_vddcore_data[] = {
-	{.main_vdd_volt = 800000, .dep_vdd_volt = 920000},
-	{.main_vdd_volt = 900000, .dep_vdd_volt = 920000},
-	{.main_vdd_volt = 1000000, .dep_vdd_volt = 950000},
-	{.main_vdd_volt = 1100000, .dep_vdd_volt = 950000},
+	{.main_vdd_volt = 1005000, .dep_vdd_volt = 1005000},
+	{.main_vdd_volt = 1025000, .dep_vdd_volt = 1025000},
 	{.main_vdd_volt = 1200000, .dep_vdd_volt = 1200000},
-	{.main_vdd_volt = 1300000, .dep_vdd_volt = 1200000},
+	{.main_vdd_volt = 1313000, .dep_vdd_volt = 1200000},
+	{.main_vdd_volt = 1374000, .dep_vdd_volt = 1200000},
 	{.main_vdd_volt = 1375000, .dep_vdd_volt = 1200000},
-	{.main_vdd_volt = 0, .dep_vdd_volt = 0},
+	{.main_vdd_volt = 1388000, .dep_vdd_volt = 1200000},
 };
 
 static struct omap_vdd_dep_volt omap44xx_vddiva_vddcore_data[] = {
-	{.main_vdd_volt = 928000, .dep_vdd_volt = 920000},
-	{.main_vdd_volt = 930000, .dep_vdd_volt = 950000},
-	{.main_vdd_volt = 1100000, .dep_vdd_volt = 1200000},
-	{.main_vdd_volt = 1260000, .dep_vdd_volt = 1200000},
-	{.main_vdd_volt = 1375000, .dep_vdd_volt = 1200000},
-	{.main_vdd_volt = 0, .dep_vdd_volt = 0},
+	{.main_vdd_volt = 1011000, .dep_vdd_volt = 1005000},
+	{.main_vdd_volt = 1013000, .dep_vdd_volt = 1025000},
+	{.main_vdd_volt = 1188000, .dep_vdd_volt = 1200000},
+	{.main_vdd_volt = 1300000, .dep_vdd_volt = 1200000},
 };
 #endif
 //LGE_CHANGE_S [kyungyoon.kim@lge.com] 2011-10-07 for CX2 @1.2GHz
