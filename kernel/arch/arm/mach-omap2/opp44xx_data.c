@@ -28,6 +28,7 @@
 #include <plat/opp.h>
 #include <plat/clock.h>
 #include <plat/omap_device.h>
+#include <plat/control.h>
 
 #include "cm-regbits-34xx.h"
 #include "prm.h"
@@ -37,10 +38,7 @@
 extern bool dss_get_mainclk_state(void);
 
 
-#define TNT_FREQ 1300000000
-#define OMAP44XX_CONTROL_FUSE_MPU_OPPTNT		0x24C
-#define CTRL_FUSE_OPP_VDD_MPU_3 (OMAP443X_SCM_BASE + OMAP44XX_CONTROL_FUSE_MPU_OPPTNT)
-
+#define TNT_FREQ 1200000000
 
 static struct clk *dpll_mpu_clk, *iva_clk, *dsp_clk, *l3_clk, *core_m2_clk;
 static struct clk *core_m3_clk, *core_m6_clk, *core_m7_clk;
@@ -108,88 +106,88 @@ static struct omap_opp_def __initdata omap44xx_pre_es2_1_opp_def_list[] = {
 
 static struct omap_opp_def __initdata omap44xx_opp_def_list[] = {
 	/* MPU OPPLP - DPLL cascading */
-	OMAP_OPP_DEF("mpu", true, 100000000, 800000),
+	OMAP_OPP_DEF("mpu", true, 100000000, 1005000),
 	/* MPU OPP1 - OPP50 */
-	OMAP_OPP_DEF("mpu", true, 300000000, 900000),
+	OMAP_OPP_DEF("mpu", true, 300000000, 1025000),
 	/* MPU OPP2 - OPP100 */
-	OMAP_OPP_DEF("mpu", true, 600000000, 1000000),
+	OMAP_OPP_DEF("mpu", true, 600000000, 1200000),
 	/* MPU OPP3 - OPP-Turbo */
-	OMAP_OPP_DEF("mpu", true, 800000000, 1100000),
+	OMAP_OPP_DEF("mpu", true, 800000000, 1313000),
 	/* MPU OPP4 - OPP-SB */
-	OMAP_OPP_DEF("mpu", true, 1008000000, 1200000),
+	OMAP_OPP_DEF("mpu", true, 1008000000, 1374000),
 	/* MPU OPP4 - OPP-TNT */
-	OMAP_OPP_DEF("mpu", true, 1200000000, 1300000),
-	/* MPU OPP5 - OPP-TNT */
-	OMAP_OPP_DEF("mpu", true, TNT_FREQ, 1375000),
+	OMAP_OPP_DEF("mpu", true, 1200000000, 1375000),
+	/* MPU OPP4 - OPP-TNT */
+	OMAP_OPP_DEF("mpu", true, TNT_FREQ, 1388000),
 
 	/* IVA OPPLP - DPLL cascading */
-	OMAP_OPP_DEF("iva", true,  133000000, 928000),
+	OMAP_OPP_DEF("iva", false,  98304000, 1011000),
 	/* IVA OPP1 - OPP50 */
-	OMAP_OPP_DEF("iva", true,  133000000, 930000),
+	OMAP_OPP_DEF("iva", true,  133000000, 1013000),
 	/* IVA OPP2 - OPP100 */
-	OMAP_OPP_DEF("iva", true,  266000000, 1100000),
+	OMAP_OPP_DEF("iva", true,  266000000, 1188000),
 	/* IVA OPP3 - OPP-Turbo */
-	OMAP_OPP_DEF("iva", false, 332000000, 1260000),
+	OMAP_OPP_DEF("iva", false, 332000000, 1300000),
 
 	/* DSP OPPLP - DPLL cascading */
-	OMAP_OPP_DEF("dsp", true, 232800000, 928000),
+	OMAP_OPP_DEF("dsp", false, 98304000, 1011000),
 	/* DSP OPP1 - OPP50 */
-	OMAP_OPP_DEF("dsp", true, 232800000, 930000),
+	OMAP_OPP_DEF("dsp", true, 232800000, 1013000),
 	/* DSP OPP2 - OPP100 */
-	OMAP_OPP_DEF("dsp", true, 465600000, 1100000),
+	OMAP_OPP_DEF("dsp", true, 465600000, 1188000),
 	/* DSP OPP3 - OPPTB */
-	OMAP_OPP_DEF("dsp", false, 498000000, 1260000),
+	OMAP_OPP_DEF("dsp", false, 498000000, 1300000),
 
 	/* ABE OPP - OPP50_98 */
-	OMAP_OPP_DEF("omap-aess-audio", true, 49000000, 928000),
+	OMAP_OPP_DEF("omap-aess-audio", false, 98304000, 1011000),
 	/* ABE OPP1 - OPP50 */
-	OMAP_OPP_DEF("omap-aess-audio", true, 98300000, 930000),
+	OMAP_OPP_DEF("omap-aess-audio", true, 98304000, 1013000),
 	/* ABE OPP2 - OPP100 */
-	OMAP_OPP_DEF("omap-aess-audio", true, 196600000, 1100000),
+	OMAP_OPP_DEF("omap-aess-audio", true, 196608000, 1188000),
 	/* ABE OPP3 - OPPTB */
-	OMAP_OPP_DEF("omap-aess-audio", false, 196600000, 1260000),
+	OMAP_OPP_DEF("omap-aess-audio", false, 196608000, 1300000),
 
 	/* L3 OPPLP - DPLL cascading */
-	OMAP_OPP_DEF("l3_main_1", true, 98304000, 928000),
+	OMAP_OPP_DEF("l3_main_1", false, 98304000, 1005000),
 	/* L3 OPP1 - OPP50 */
-	OMAP_OPP_DEF("l3_main_1", true, 100000000, 950000),
+	OMAP_OPP_DEF("l3_main_1", true, 100000000, 1025000),
 	/* L3 OPP2 - OPP100, OPP-Turbo, OPP-SB */
 	OMAP_OPP_DEF("l3_main_1", true, 200000000, 1200000),
 
 	/* EMIF1 OPPLP - DPLL cascading */
-	OMAP_OPP_DEF("emif1", true, 196608000, 928000),
+	OMAP_OPP_DEF("emif1", false, 196608000, 1005000),
 	/*EMIF1 OPP1 - OPP50 */
-	OMAP_OPP_DEF("emif1", true, 400000000, 950000),
+	OMAP_OPP_DEF("emif1", true, 400000000, 1025000),
 	/*EMIF1 OPP2 - OPP100 */
 	OMAP_OPP_DEF("emif1", true, 800000000, 1200000),
 
 	/* EMIF2 OPPLP - DPLL cascading */
-	OMAP_OPP_DEF("emif2", true, 196608000, 928000),
+	OMAP_OPP_DEF("emif2", false, 196608000, 1005000),
 	/*EMIF2 OPP1 - OPP50 */
-	OMAP_OPP_DEF("emif2", true, 400000000, 950000),
+	OMAP_OPP_DEF("emif2", true, 400000000, 1025000),
 	/*EMIF2 OPP2 - OPP100 */
 	OMAP_OPP_DEF("emif2", true, 800000000, 1200000),
 
 	/* CAM FDIF OPPLP - DPLL cascading */
-	OMAP_OPP_DEF("fdif", true, 49152000, 928000),
+	OMAP_OPP_DEF("fdif", false, 49152000, 1005000),
 	/* CAM FDIF OPP1 - OPP50 */
-	OMAP_OPP_DEF("fdif", true, 64000000, 950000),
+	OMAP_OPP_DEF("fdif", true, 64000000, 1025000),
 	/* CAM FDIF OPP2 - OPP100 */
 	OMAP_OPP_DEF("fdif", true, 128000000, 1200000),
 
 	/* SGX OPPLP - DPLL cascading */
-	OMAP_OPP_DEF("gpu", true, 153600000, 928000),
+	OMAP_OPP_DEF("gpu", false, 196608000, 1005000),
 	/* SGX OPP1 - OPP50 */
-	OMAP_OPP_DEF("gpu", true, 230400000, 950000),
+	OMAP_OPP_DEF("gpu", true, 153600000, 1025000),
 	/* SGX OPP2 - OPP100 */
 	OMAP_OPP_DEF("gpu", true, 384000000, 1200000),
 
 	/* HSI OPPLP - DPLL cascading */
-	OMAP_OPP_DEF("hsi", false, 98304000, 928000),
+	OMAP_OPP_DEF("hsi", false, 98304000, 1005000),
 	/* HSI OPP1 - OPP50 */
-	OMAP_OPP_DEF("hsi", true, 96000000, 950000),
+	OMAP_OPP_DEF("hsi", true, 96000000, 1025000),
 	/* HSI OPP2 - OPP100 */
-	OMAP_OPP_DEF("hsi", true, 192000000, 1200000),
+	OMAP_OPP_DEF("hsi", true, 96000000, 1200000),
 };
 
 #define	L3_OPP50_RATE			100000000
@@ -534,13 +532,11 @@ err:
 int __init omap4_pm_init_opp_table(void)
 {
 	struct omap_opp_def *opp_def;
+	struct omap_opp *tnt_opp;
 	struct device *dev;
 	struct clk *gpu_fclk;
 	int i, r;
-        #if defined (CONFIG_MACH_LGE_CX2)
-	struct omap_opp *tnt_opp;
 	int has_tnt_opp = 0;
-	#endif
 
 	/*
 	 * Allow multiple calls, but initialize only if not already initalized
@@ -589,7 +585,6 @@ int __init omap4_pm_init_opp_table(void)
 		opp_populate_rate_fns(dev, omap4_mpu_set_rate,
 				omap4_mpu_get_rate);
 
-#if defined (CONFIG_MACH_LGE_CX2)
 	/* Enable 1.2Gz OPP for silicon that supports it
 	 * TODO: determine if FUSE_OPP_VDD_MPU_3 is a reliable source to
 	 * determine 1.2Gz availability.
@@ -610,8 +605,6 @@ int __init omap4_pm_init_opp_table(void)
 			opp_enable(tnt_opp);
 		}
 	}
-#endif
-
 
 	dev = omap2_get_iva_device();
 	if (dev)
