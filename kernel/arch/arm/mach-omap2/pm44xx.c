@@ -291,6 +291,14 @@ void omap4_enter_sleep(unsigned int cpu, unsigned int power_state)
 		omap4_sar_save();
 		omap4_sar_overwrite();
 	}
+	
+if (core_next_state ==1 && cpu0_next_state == 0){
+
+		//Set command volatage to OPP1GHz just after suspend to fix lockup issue after resume
+		omap_writel(0x29b18c80 , 0x4a307B94);
+		omap_writel(0x37b78c80 , 0x4a307B98);
+		omap_writel(0x1ba98c80 , 0x4a307B9C);
+	}
 
 	omap4_enter_lowpower(cpu, power_state);
 

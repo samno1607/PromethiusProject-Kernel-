@@ -37,8 +37,9 @@
 #include "cm-regbits-44xx.h"
 extern bool dss_get_mainclk_state(void);
 
-
 #define TNT_FREQ 1200000000
+static unsigned long cur_rate;
+static unsigned long rev_lpg;
 
 static struct clk *dpll_mpu_clk, *iva_clk, *dsp_clk, *l3_clk, *core_m2_clk;
 static struct clk *core_m3_clk, *core_m6_clk, *core_m7_clk;
@@ -106,88 +107,88 @@ static struct omap_opp_def __initdata omap44xx_pre_es2_1_opp_def_list[] = {
 
 static struct omap_opp_def __initdata omap44xx_opp_def_list[] = {
 	/* MPU OPPLP - DPLL cascading */
-	OMAP_OPP_DEF("mpu", true, 100000000, 1005000),
+	OMAP_OPP_DEF("mpu", true, 100000000, 800000),
 	/* MPU OPP1 - OPP50 */
-	OMAP_OPP_DEF("mpu", true, 300000000, 1025000),
+	OMAP_OPP_DEF("mpu", true, 300000000, 900000),
 	/* MPU OPP2 - OPP100 */
-	OMAP_OPP_DEF("mpu", true, 600000000, 1200000),
+	OMAP_OPP_DEF("mpu", true, 600000000, 1000000),
 	/* MPU OPP3 - OPP-Turbo */
-	OMAP_OPP_DEF("mpu", true, 800000000, 1313000),
-	/* MPU OPP4 - OPP-SB */
-	OMAP_OPP_DEF("mpu", true, 1008000000, 1374000),
-	/* MPU OPP4 - OPP-TNT */
-	OMAP_OPP_DEF("mpu", true, 1200000000, 1375000),
-	/* MPU OPP4 - OPP-TNT */
-	OMAP_OPP_DEF("mpu", true, TNT_FREQ, 1388000),
+	OMAP_OPP_DEF("mpu", true, 800000000, 1100000),
+	/* MPU OPP4 - OPP-Nitro */
+	OMAP_OPP_DEF("mpu", true, 1008000000, 1200000),
+	/* MPU OPP5 - OPP-TNT */
+	OMAP_OPP_DEF("mpu", true, 1200000000, 1300000),
+	/* MPU OPP6 - OPP-XTM */
+	OMAP_OPP_DEF("mpu", true, 1320000000, 1375000),
 
 	/* IVA OPPLP - DPLL cascading */
-	OMAP_OPP_DEF("iva", false,  98304000, 1011000),
+	OMAP_OPP_DEF("iva", false,  98304000, 928000),
 	/* IVA OPP1 - OPP50 */
-	OMAP_OPP_DEF("iva", true,  133000000, 1013000),
+	OMAP_OPP_DEF("iva", true,  133000000, 930000),
 	/* IVA OPP2 - OPP100 */
-	OMAP_OPP_DEF("iva", true,  266000000, 1188000),
+	OMAP_OPP_DEF("iva", true,  266000000, 1100000),
 	/* IVA OPP3 - OPP-Turbo */
-	OMAP_OPP_DEF("iva", false, 332000000, 1300000),
+	OMAP_OPP_DEF("iva", false, 332000000, 1260000),
 
 	/* DSP OPPLP - DPLL cascading */
-	OMAP_OPP_DEF("dsp", false, 98304000, 1011000),
+	OMAP_OPP_DEF("dsp", false, 98304000, 928000),
 	/* DSP OPP1 - OPP50 */
-	OMAP_OPP_DEF("dsp", true, 232800000, 1013000),
+	OMAP_OPP_DEF("dsp", true, 232800000, 930000),
 	/* DSP OPP2 - OPP100 */
-	OMAP_OPP_DEF("dsp", true, 465600000, 1188000),
+	OMAP_OPP_DEF("dsp", true, 465600000, 1100000),
 	/* DSP OPP3 - OPPTB */
-	OMAP_OPP_DEF("dsp", false, 498000000, 1300000),
+	OMAP_OPP_DEF("dsp", false, 498000000, 1260000),
 
 	/* ABE OPP - OPP50_98 */
-	OMAP_OPP_DEF("omap-aess-audio", false, 98304000, 1011000),
+	OMAP_OPP_DEF("omap-aess-audio", false, 98304000, 928000),
 	/* ABE OPP1 - OPP50 */
-	OMAP_OPP_DEF("omap-aess-audio", true, 98304000, 1013000),
+	OMAP_OPP_DEF("omap-aess-audio", true, 98304000, 930000),
 	/* ABE OPP2 - OPP100 */
-	OMAP_OPP_DEF("omap-aess-audio", true, 196608000, 1188000),
+	OMAP_OPP_DEF("omap-aess-audio", true, 196608000, 1100000),
 	/* ABE OPP3 - OPPTB */
-	OMAP_OPP_DEF("omap-aess-audio", false, 196608000, 1300000),
+	OMAP_OPP_DEF("omap-aess-audio", false, 196608000, 1260000),
 
 	/* L3 OPPLP - DPLL cascading */
-	OMAP_OPP_DEF("l3_main_1", false, 98304000, 1005000),
+	OMAP_OPP_DEF("l3_main_1", false, 98304000, 928000),
 	/* L3 OPP1 - OPP50 */
-	OMAP_OPP_DEF("l3_main_1", true, 100000000, 1025000),
+	OMAP_OPP_DEF("l3_main_1", true, 100000000, 930000),
 	/* L3 OPP2 - OPP100, OPP-Turbo, OPP-SB */
-	OMAP_OPP_DEF("l3_main_1", true, 200000000, 1200000),
+	OMAP_OPP_DEF("l3_main_1", true, 200000000, 1100000),
 
 	/* EMIF1 OPPLP - DPLL cascading */
-	OMAP_OPP_DEF("emif1", false, 196608000, 1005000),
+	OMAP_OPP_DEF("emif1", false, 196608000, 928000),
 	/*EMIF1 OPP1 - OPP50 */
-	OMAP_OPP_DEF("emif1", true, 400000000, 1025000),
+	OMAP_OPP_DEF("emif1", true, 400000000, 930000),
 	/*EMIF1 OPP2 - OPP100 */
-	OMAP_OPP_DEF("emif1", true, 800000000, 1200000),
+	OMAP_OPP_DEF("emif1", true, 800000000, 1100000),
 
 	/* EMIF2 OPPLP - DPLL cascading */
-	OMAP_OPP_DEF("emif2", false, 196608000, 1005000),
+	OMAP_OPP_DEF("emif2", false, 196608000, 928000),
 	/*EMIF2 OPP1 - OPP50 */
-	OMAP_OPP_DEF("emif2", true, 400000000, 1025000),
+	OMAP_OPP_DEF("emif2", true, 400000000, 930000),
 	/*EMIF2 OPP2 - OPP100 */
-	OMAP_OPP_DEF("emif2", true, 800000000, 1200000),
+	OMAP_OPP_DEF("emif2", true, 800000000, 1100000),
 
 	/* CAM FDIF OPPLP - DPLL cascading */
-	OMAP_OPP_DEF("fdif", false, 49152000, 1005000),
+	OMAP_OPP_DEF("fdif", false, 49152000, 928000),
 	/* CAM FDIF OPP1 - OPP50 */
-	OMAP_OPP_DEF("fdif", true, 64000000, 1025000),
+	OMAP_OPP_DEF("fdif", true, 64000000, 930000),
 	/* CAM FDIF OPP2 - OPP100 */
-	OMAP_OPP_DEF("fdif", true, 128000000, 1200000),
+	OMAP_OPP_DEF("fdif", true, 128000000, 1100000),
 
 	/* SGX OPPLP - DPLL cascading */
-	OMAP_OPP_DEF("gpu", false, 196608000, 1005000),
+	OMAP_OPP_DEF("gpu", false, 196608000, 928000),
 	/* SGX OPP1 - OPP50 */
-	OMAP_OPP_DEF("gpu", true, 153600000, 1025000),
+	OMAP_OPP_DEF("gpu", true, 153600000, 930000),
 	/* SGX OPP2 - OPP100 */
-	OMAP_OPP_DEF("gpu", true, 384000000, 1200000),
+	OMAP_OPP_DEF("gpu", true, 307200000, 1100000),
 
 	/* HSI OPPLP - DPLL cascading */
-	OMAP_OPP_DEF("hsi", false, 98304000, 1005000),
+	OMAP_OPP_DEF("hsi", false, 98304000, 928000),
 	/* HSI OPP1 - OPP50 */
-	OMAP_OPP_DEF("hsi", true, 96000000, 1025000),
+	OMAP_OPP_DEF("hsi", true, 96000000, 930000),
 	/* HSI OPP2 - OPP100 */
-	OMAP_OPP_DEF("hsi", true, 96000000, 1200000),
+	OMAP_OPP_DEF("hsi", true, 96000000, 1100000),
 };
 
 #define	L3_OPP50_RATE			100000000
@@ -206,7 +207,7 @@ static u32 omap44xx_opp_def_size = ARRAY_SIZE(omap44xx_opp_def_list);
 
 static unsigned long omap4_mpu_get_rate(struct device *dev);
 
-#ifndef CONFIG_CPU_FREQ
+#ifdef CONFIG_CPU_FREQ
 static unsigned long compute_lpj(unsigned long ref, u_int div, u_int mult)
 {
 	unsigned long new_jiffy_l, new_jiffy_h;
@@ -238,7 +239,6 @@ extern u32 cm_rmw_mod_reg_bitsEx(u32 mask, u32 bits, s16 module, s16 idx);
 
 static int omap4_mpu_set_rate(struct device *dev, unsigned long rate)
 {
-#ifdef CONFIG_OMAP4_KEEP_STATIC_DEPENDENCIES
 
 	int ret;
 
@@ -249,66 +249,9 @@ static int omap4_mpu_set_rate(struct device *dev, unsigned long rate)
 		return ret;
 	}
 
-	return 0;
-#else
-#if 0
-	int 	ret = 0;
-	unsigned long irqflags = 0;
-	u32 reg =OMAP4430_MEMIF_STATDEP_MASK;	
-	
-	//printk("func=%s, rate =%ld, name=%s\n", __func__, rate, dev->driver->name);
-
-	// rate 196M , LCD off
-	//if (rate == 196608000 && cosmo_panel_suspend_flag ==1)
-	if (dss_get_mainclk_state() == 0)
-	{
-		ret = clk_set_rate(dpll_mpu_clk, rate);
-		if (ret) {
-			dev_warn(dev, "%s: Unable to set rate to %ld\n",
-				__func__, rate);
-			return ret;
-		}
-
-		if(old_mpu_rate != rate)
-		{
-			spin_lock_irqsave(&mpu_lock, irqflags);
-			cm_rmw_mod_reg_bitsEx(reg, 0, OMAP4430_PRM_MPU_MOD, OMAP4_CM_MPU_STATICDEP_OFFSET);
-			spin_unlock_irqrestore(&mpu_lock, irqflags);
-		}
-		old_mpu_rate= rate;
-	}
-	else
-	{
-		if(old_mpu_rate != rate)
-		{
-			spin_lock_irqsave(&mpu_lock, irqflags);	
-			cm_rmw_mod_reg_bitsEx(reg, 1, OMAP4430_PRM_MPU_MOD, OMAP4_CM_MPU_STATICDEP_OFFSET);
-			spin_unlock_irqrestore(&mpu_lock, irqflags);				
-		}
-
-		ret = clk_set_rate(dpll_mpu_clk, rate);
-		if (ret) {
-			dev_warn(dev, "%s: Unable to set rate to %ld\n",
-				__func__, rate);
-			return ret;
-		}
-
-		old_mpu_rate= rate;
-	}
-#else
-	int ret;
-
-	ret = clk_set_rate(dpll_mpu_clk, rate);
-	if (ret) {
-		dev_warn(dev, "%s: Unable to set rate to %ld\n",
-			__func__, rate);
-		return ret;
-	}
-
-#endif
+        loops_per_jiffy = compute_lpj(rev_lpg, cur_rate / 1000, rate / 1000);
 
 	return 0;
-#endif	
 }
 
 static unsigned long omap4_mpu_get_rate(struct device *dev)
@@ -574,6 +517,9 @@ int __init omap4_pm_init_opp_table(void)
 	abe_clk = clk_get(NULL, "abe_clk");
 	fdif_clk = clk_get(NULL, "fdif_fck");
 	hsi_clk = clk_get(NULL, "hsi_fck");
+
+        cur_rate = clk_get_rate(dpll_mpu_clk);
+        rev_lpg = loops_per_jiffy;
 
 	/* Set SGX parent to PER DPLL */
 	clk_set_parent(gpu_fclk, sgx_clk);

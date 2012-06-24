@@ -2,7 +2,7 @@
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.35
 # Tue Jan 18 21:05:34 2011
-# PromethiusProject Kernel Version 1.4.5
+# PromethiusProject Kernel Version 1.5
 
 
 CONFIG_ARM=y
@@ -161,9 +161,9 @@ CONFIG_IOSCHED_VR=y
 # CONFIG_DEFAULT_DEADLINE is not set
 # CONFIG_DEFAULT_CFQ is not set
 # CONFIG_DEFAULT_NOOP is not set
-# CONFIG_DEFAULT_VR is not set
-CONFIG_DEFAULT_SIO=y
-CONFIG_DEFAULT_IOSCHED="sio"
+CONFIG_DEFAULT_VR=y
+# CONFIG_DEFAULT_SIO is not set
+CONFIG_DEFAULT_IOSCHED="vr"
 # CONFIG_INLINE_SPIN_TRYLOCK is not set
 # CONFIG_INLINE_SPIN_TRYLOCK_BH is not set
 # CONFIG_INLINE_SPIN_LOCK is not set
@@ -2237,7 +2237,7 @@ CONFIG_DEBUG_INFO=y
 # CONFIG_DEBUG_SG is not set
 # CONFIG_DEBUG_NOTIFIERS is not set
 # CONFIG_DEBUG_CREDENTIALS is not set
-# CONFIG_FRAME_POINTER is not set
+CONFIG_FRAME_POINTER=y
 # CONFIG_BOOT_PRINTK_DELAY is not set
 # CONFIG_RCU_TORTURE_TEST is not set
 # CONFIG_RCU_CPU_STALL_DETECTOR is not set
