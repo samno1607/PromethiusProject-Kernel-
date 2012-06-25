@@ -107,7 +107,7 @@ static struct omap_opp_def __initdata omap44xx_pre_es2_1_opp_def_list[] = {
 
 static struct omap_opp_def __initdata omap44xx_opp_def_list[] = {
 	/* MPU OPPLP - DPLL cascading */
-	OMAP_OPP_DEF("mpu", true, 100000000, 800000),
+	OMAP_OPP_DEF("mpu", true, 100000000, 850000),
 	/* MPU OPP1 - OPP50 */
 	OMAP_OPP_DEF("mpu", true, 300000000, 900000),
 	/* MPU OPP2 - OPP100 */
