@@ -2,7 +2,7 @@
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.35
 # Tue Jan 18 21:05:34 2011
-# PromethiusProject Kernel Version 1.5
+# PromethiusProject Kernel Version 1.5.1
 
 
 CONFIG_ARM=y
