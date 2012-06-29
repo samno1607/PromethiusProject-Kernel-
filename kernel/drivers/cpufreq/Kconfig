@@ -123,6 +123,10 @@ config CPU_FREQ_DEFAULT_GOV_HOTPLUG
 	  support the hotplug governor. If unsure have a look at
 	  the help section of the driver. Fallback governor will be the
 	  performance governor.
+
+config CPU_FREQ_DEFAULT_GOV_PEGASUSQ
+	bool "pegasusq"
+	select CPU_FREQ_GOV_PEGASUSQ
 endchoice
 
 config CPU_FREQ_GOV_PERFORMANCE
@@ -222,5 +226,8 @@ config CPU_FREQ_GOV_HOTPLUG
 	  'ondemand' instead.
 
 	  If in doubt, say N.
+
+config CPU_FREQ_GOV_PEGASUSQ
+	tristate "'pegasusq' cpufreq policy governor"
 
 endif	# CPU_FREQ
