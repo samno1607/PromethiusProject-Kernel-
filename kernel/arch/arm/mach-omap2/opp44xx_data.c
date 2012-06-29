@@ -128,7 +128,7 @@ static struct omap_opp_def __initdata omap44xx_opp_def_list[] = {
 	/* IVA OPP2 - OPP100 */
 	OMAP_OPP_DEF("iva", true,  266000000, 1100000),
 	/* IVA OPP3 - OPP-Turbo */
-	OMAP_OPP_DEF("iva", true, 332000000, 1260000),
+	OMAP_OPP_DEF("iva", false, 332000000, 1260000),
 
 	/* DSP OPPLP - DPLL cascading */
 	OMAP_OPP_DEF("dsp", false, 98304000, 928000),
@@ -137,7 +137,7 @@ static struct omap_opp_def __initdata omap44xx_opp_def_list[] = {
 	/* DSP OPP2 - OPP100 */
 	OMAP_OPP_DEF("dsp", true, 465600000, 1100000),
 	/* DSP OPP3 - OPPTB */
-	OMAP_OPP_DEF("dsp", true, 496000000, 1260000),
+	OMAP_OPP_DEF("dsp", false, 498000000, 1260000),
 
 	/* ABE OPP - OPP50_98 */
 	OMAP_OPP_DEF("omap-aess-audio", false, 98304000, 928000),
