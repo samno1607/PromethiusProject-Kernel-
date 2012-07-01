@@ -1118,7 +1118,7 @@ static int cpufreq_add_dev(struct sys_device *sys_dev)
 
 	}
 	policy->user_policy.min = 100000;
-	policy->user_policy.max = 1200000;
+	policy->user_policy.max = 1320000;
 
 	blocking_notifier_call_chain(&cpufreq_policy_notifier_list,
 				     CPUFREQ_START, policy);
@@ -1712,7 +1712,10 @@ static int __cpufreq_governor(struct cpufreq_policy *policy,
 #ifdef CONFIG_CPU_FREQ_GOV_PERFORMANCE
 	struct cpufreq_governor *gov = &cpufreq_gov_performance;
 #else
-	struct cpufreq_governor *gov = NULL;
+	/* FIXME: what's the actual transition time? */
+	policy->cpuinfo.transition_latency = 10 * 1000;
+
+	return 0;
 #endif
 
 	if (policy->governor->max_transition_latency &&
