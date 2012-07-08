@@ -1117,7 +1117,7 @@ static int cpufreq_add_dev(struct sys_device *sys_dev)
 		goto err_unlock_policy;
 
 	}
-	policy->user_policy.min = 192000;
+	policy->user_policy.min = 307200;
 	policy->user_policy.max = 1228000;
 
 	blocking_notifier_call_chain(&cpufreq_policy_notifier_list,
