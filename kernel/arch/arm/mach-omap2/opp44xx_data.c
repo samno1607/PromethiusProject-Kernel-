@@ -37,7 +37,7 @@
 #include "cm-regbits-44xx.h"
 extern bool dss_get_mainclk_state(void);
 
-#define TNT_FREQ 1200000000
+#define TNT_FREQ 1400000000
 static unsigned long cur_rate;
 static unsigned long rev_lpg;
 
@@ -119,7 +119,9 @@ static struct omap_opp_def __initdata omap44xx_opp_def_list[] = {
 	/* MPU OPP5 - OPP-TNT */
 	OMAP_OPP_DEF("mpu", true, 1200000000, 1300000),
 	/* MPU OPP6 - OPP-XTM */
-	OMAP_OPP_DEF("mpu", true, 1320000000, 1375000),
+	OMAP_OPP_DEF("mpu", true, 1300000000, 1350000),
+	/* MPU OPP7 - OPP-XTM2 */
+	OMAP_OPP_DEF("mpu", true, TNT_FREQ, 1375000),
 
 	/* IVA OPPLP - DPLL cascading */
 	OMAP_OPP_DEF("iva", false,  98304000, 928000),
@@ -154,6 +156,8 @@ static struct omap_opp_def __initdata omap44xx_opp_def_list[] = {
 	OMAP_OPP_DEF("l3_main_1", true, 100000000, 930000),
 	/* L3 OPP2 - OPP100, OPP-Turbo, OPP-SB */
 	OMAP_OPP_DEF("l3_main_1", true, 200000000, 1100000),
+	/* L3 OPP3 - OPPOC */
+	OMAP_OPP_DEF("l3_main_1", true, 400000000, 1350000),
 
 	/* EMIF1 OPPLP - DPLL cascading */
 	OMAP_OPP_DEF("emif1", false, 196608000, 928000),
@@ -161,6 +165,8 @@ static struct omap_opp_def __initdata omap44xx_opp_def_list[] = {
 	OMAP_OPP_DEF("emif1", true, 400000000, 930000),
 	/*EMIF1 OPP2 - OPP100 */
 	OMAP_OPP_DEF("emif1", true, 800000000, 1100000),
+	/*EMIF1 OPP3 - OPPOC */
+	OMAP_OPP_DEF("emif1", true, 800000000, 1350000),
 
 	/* EMIF2 OPPLP - DPLL cascading */
 	OMAP_OPP_DEF("emif2", false, 196608000, 928000),
@@ -168,6 +174,8 @@ static struct omap_opp_def __initdata omap44xx_opp_def_list[] = {
 	OMAP_OPP_DEF("emif2", true, 400000000, 930000),
 	/*EMIF2 OPP2 - OPP100 */
 	OMAP_OPP_DEF("emif2", true, 800000000, 1100000),
+	/*EMIF2 OPP3 - OPPOC */
+	OMAP_OPP_DEF("emif2", true, 800000000, 1350000),
 
 	/* CAM FDIF OPPLP - DPLL cascading */
 	OMAP_OPP_DEF("fdif", false, 49152000, 928000),
@@ -175,13 +183,17 @@ static struct omap_opp_def __initdata omap44xx_opp_def_list[] = {
 	OMAP_OPP_DEF("fdif", true, 64000000, 930000),
 	/* CAM FDIF OPP2 - OPP100 */
 	OMAP_OPP_DEF("fdif", true, 128000000, 1100000),
+	/* CAM FDIF OPP3 - OPPOC */
+	OMAP_OPP_DEF("fdif", true, 128000000, 1350000),
 
 	/* SGX OPPLP - DPLL cascading */
 	OMAP_OPP_DEF("gpu", false, 196608000, 928000),
 	/* SGX OPP1 - OPP50 */
 	OMAP_OPP_DEF("gpu", true, 153600000, 930000),
 	/* SGX OPP2 - OPP100 */
-	OMAP_OPP_DEF("gpu", true, 307200000, 1100000),
+	OMAP_OPP_DEF("gpu", true, 384000000, 1100000),
+	/* SGX OPP3 - OPPOC */
+	OMAP_OPP_DEF("gpu", true, 512000000, 1350000),
 
 	/* HSI OPPLP - DPLL cascading */
 	OMAP_OPP_DEF("hsi", false, 98304000, 928000),
@@ -189,6 +201,8 @@ static struct omap_opp_def __initdata omap44xx_opp_def_list[] = {
 	OMAP_OPP_DEF("hsi", true, 96000000, 930000),
 	/* HSI OPP2 - OPP100 */
 	OMAP_OPP_DEF("hsi", true, 192000000, 1100000),
+	/* HSI OPP3 - OPPOC */
+	OMAP_OPP_DEF("hsi", true, 192000000, 1350000),
 };
 
 #define	L3_OPP50_RATE			100000000
