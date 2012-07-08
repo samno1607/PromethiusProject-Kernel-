@@ -37,7 +37,7 @@
 #include "cm-regbits-44xx.h"
 extern bool dss_get_mainclk_state(void);
 
-#define TNT_FREQ 1400000000
+#define TNT_FREQ 1382400000
 static unsigned long cur_rate;
 static unsigned long rev_lpg;
 
@@ -107,21 +107,21 @@ static struct omap_opp_def __initdata omap44xx_pre_es2_1_opp_def_list[] = {
 
 static struct omap_opp_def __initdata omap44xx_opp_def_list[] = {
 	/* MPU OPPLP - DPLL cascading */
-	OMAP_OPP_DEF("mpu", false, 100000000, 850000),
+	OMAP_OPP_DEF("mpu", false, 115200000, 800000),
 	/* MPU OPP1 - OPP50 */
-	OMAP_OPP_DEF("mpu", true, 300000000, 850000),
+	OMAP_OPP_DEF("mpu", true, 192000000, 800000),
 	/* MPU OPP2 - OPP100 */
-	OMAP_OPP_DEF("mpu", true, 600000000, 1000000),
+	OMAP_OPP_DEF("mpu", true, 384000000, 950000),
 	/* MPU OPP3 - OPP-Turbo */
-	OMAP_OPP_DEF("mpu", true, 800000000, 1100000),
+	OMAP_OPP_DEF("mpu", true, 729600000, 1100000),
 	/* MPU OPP4 - OPP-Nitro */
-	OMAP_OPP_DEF("mpu", true, 1008000000, 1200000),
+	OMAP_OPP_DEF("mpu", true, 1036800000, 1200000),
 	/* MPU OPP5 - OPP-TNT */
-	OMAP_OPP_DEF("mpu", true, 1200000000, 1300000),
+	OMAP_OPP_DEF("mpu", true, 1228000000, 1300000),
 	/* MPU OPP6 - OPP-XTM */
-	OMAP_OPP_DEF("mpu", true, 1300000000, 1350000),
+	OMAP_OPP_DEF("mpu", true, 1305600000, 1350000),
 	/* MPU OPP7 - OPP-XTM2 */
-	OMAP_OPP_DEF("mpu", true, TNT_FREQ, 1375000),
+	OMAP_OPP_DEF("mpu", true, 1382400000, 1375000),
 
 	/* IVA OPPLP - DPLL cascading */
 	OMAP_OPP_DEF("iva", false,  98304000, 928000),
@@ -130,7 +130,7 @@ static struct omap_opp_def __initdata omap44xx_opp_def_list[] = {
 	/* IVA OPP2 - OPP100 */
 	OMAP_OPP_DEF("iva", true,  266000000, 1100000),
 	/* IVA OPP3 - OPP-Turbo */
-	OMAP_OPP_DEF("iva", false, 332000000, 1260000),
+	OMAP_OPP_DEF("iva", true,  332000000, 1300000),
 
 	/* DSP OPPLP - DPLL cascading */
 	OMAP_OPP_DEF("dsp", false, 98304000, 928000),
@@ -139,7 +139,7 @@ static struct omap_opp_def __initdata omap44xx_opp_def_list[] = {
 	/* DSP OPP2 - OPP100 */
 	OMAP_OPP_DEF("dsp", true, 465600000, 1100000),
 	/* DSP OPP3 - OPPTB */
-	OMAP_OPP_DEF("dsp", false, 498000000, 1260000),
+	OMAP_OPP_DEF("dsp", true, 498000000, 1300000),
 
 	/* ABE OPP - OPP50_98 */
 	OMAP_OPP_DEF("omap-aess-audio", false, 98304000, 928000),
@@ -148,7 +148,7 @@ static struct omap_opp_def __initdata omap44xx_opp_def_list[] = {
 	/* ABE OPP2 - OPP100 */
 	OMAP_OPP_DEF("omap-aess-audio", true, 196608000, 1100000),
 	/* ABE OPP3 - OPPTB */
-	OMAP_OPP_DEF("omap-aess-audio", false, 196608000, 1260000),
+	OMAP_OPP_DEF("omap-aess-audio", false, 196608000, 1300000),
 
 	/* L3 OPPLP - DPLL cascading */
 	OMAP_OPP_DEF("l3_main_1", false, 98304000, 928000),
@@ -166,7 +166,7 @@ static struct omap_opp_def __initdata omap44xx_opp_def_list[] = {
 	/*EMIF1 OPP2 - OPP100 */
 	OMAP_OPP_DEF("emif1", true, 800000000, 1100000),
 	/*EMIF1 OPP3 - OPPOC */
-	OMAP_OPP_DEF("emif1", true, 800000000, 1350000),
+	OMAP_OPP_DEF("emif1", true, 1000000000, 1350000),
 
 	/* EMIF2 OPPLP - DPLL cascading */
 	OMAP_OPP_DEF("emif2", false, 196608000, 928000),
@@ -175,7 +175,7 @@ static struct omap_opp_def __initdata omap44xx_opp_def_list[] = {
 	/*EMIF2 OPP2 - OPP100 */
 	OMAP_OPP_DEF("emif2", true, 800000000, 1100000),
 	/*EMIF2 OPP3 - OPPOC */
-	OMAP_OPP_DEF("emif2", true, 800000000, 1350000),
+	OMAP_OPP_DEF("emif2", true, 1000000000, 1350000),
 
 	/* CAM FDIF OPPLP - DPLL cascading */
 	OMAP_OPP_DEF("fdif", false, 49152000, 928000),
@@ -200,7 +200,7 @@ static struct omap_opp_def __initdata omap44xx_opp_def_list[] = {
 	/* HSI OPP1 - OPP50 */
 	OMAP_OPP_DEF("hsi", true, 96000000, 930000),
 	/* HSI OPP2 - OPP100 */
-	OMAP_OPP_DEF("hsi", true, 192000000, 1100000),
+	OMAP_OPP_DEF("hsi", true, 96000000, 1100000),
 	/* HSI OPP3 - OPPOC */
 	OMAP_OPP_DEF("hsi", true, 192000000, 1350000),
 };
