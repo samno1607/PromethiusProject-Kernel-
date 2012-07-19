@@ -37,7 +37,6 @@
 #include "cm-regbits-44xx.h"
 extern bool dss_get_mainclk_state(void);
 
-#define TNT_FREQ 1382400000
 static unsigned long cur_rate;
 static unsigned long rev_lpg;
 
@@ -109,19 +108,19 @@ static struct omap_opp_def __initdata omap44xx_opp_def_list[] = {
 	/* MPU OPPLP - DPLL cascading */
 	OMAP_OPP_DEF("mpu", true, 192000000, 800000),
 	/* MPU OPP1 - OPP50 */
-	OMAP_OPP_DEF("mpu", true, 307200000, 850000),
+	OMAP_OPP_DEF("mpu", true, 350000000, 850000),
 	/* MPU OPP2 - OPP100 */
-	OMAP_OPP_DEF("mpu", true, 614400000, 950000),
+	OMAP_OPP_DEF("mpu", true, 600000000, 950000),
 	/* MPU OPP3 - OPP-Turbo */
-	OMAP_OPP_DEF("mpu", true, 806400000, 1100000),
+	OMAP_OPP_DEF("mpu", true, 800000000, 1100000),
 	/* MPU OPP4 - OPP-Nitro */
-	OMAP_OPP_DEF("mpu", true, 1036800000, 1200000),
+	OMAP_OPP_DEF("mpu", true, 1008000000, 1200000),
 	/* MPU OPP5 - OPP-TNT */
-	OMAP_OPP_DEF("mpu", true, 1228000000, 1300000),
+	OMAP_OPP_DEF("mpu", true, 1200000000, 1300000),
 	/* MPU OPP6 - OPP-XTM */
-	OMAP_OPP_DEF("mpu", true, 1305600000, 1350000),
+	OMAP_OPP_DEF("mpu", true, 1300000000, 1350000),
 	/* MPU OPP7 - OPP-XTM2 */
-	OMAP_OPP_DEF("mpu", true, 1382400000, 1375000),
+	OMAP_OPP_DEF("mpu", true, 1380000000, 1375000),
 
 	/* IVA OPPLP - DPLL cascading */
 	OMAP_OPP_DEF("iva", false,  98304000, 928000),
@@ -166,7 +165,7 @@ static struct omap_opp_def __initdata omap44xx_opp_def_list[] = {
 	/*EMIF1 OPP2 - OPP100 */
 	OMAP_OPP_DEF("emif1", true, 800000000, 1100000),
 	/*EMIF1 OPP3 - OPPOC */
-	OMAP_OPP_DEF("emif1", true, 1000000000, 1350000),
+	OMAP_OPP_DEF("emif1", true, 1200000000, 1350000),
 
 	/* EMIF2 OPPLP - DPLL cascading */
 	OMAP_OPP_DEF("emif2", false, 196608000, 928000),
@@ -175,7 +174,7 @@ static struct omap_opp_def __initdata omap44xx_opp_def_list[] = {
 	/*EMIF2 OPP2 - OPP100 */
 	OMAP_OPP_DEF("emif2", true, 800000000, 1100000),
 	/*EMIF2 OPP3 - OPPOC */
-	OMAP_OPP_DEF("emif2", true, 1000000000, 1350000),
+	OMAP_OPP_DEF("emif2", true, 1200000000, 1350000),
 
 	/* CAM FDIF OPPLP - DPLL cascading */
 	OMAP_OPP_DEF("fdif", false, 49152000, 928000),
@@ -544,27 +543,6 @@ int __init omap4_pm_init_opp_table(void)
 	if (dev)
 		opp_populate_rate_fns(dev, omap4_mpu_set_rate,
 				omap4_mpu_get_rate);
-
-	/* Enable 1.2Gz OPP for silicon that supports it
-	 * TODO: determine if FUSE_OPP_VDD_MPU_3 is a reliable source to
-	 * determine 1.2Gz availability.
-	 */
-	has_tnt_opp = __raw_readl(OMAP2_L4_IO_ADDRESS(CTRL_FUSE_OPP_VDD_MPU_3));
-	has_tnt_opp &= 0xFFFFFF;
-
-	if (has_tnt_opp) {
-		tnt_opp = opp_find_freq_exact(dev, TNT_FREQ, false);
-		if (IS_ERR(tnt_opp))
-		{
-			printk(KERN_ERR"[1.2GHz support Fail] %d\n",tnt_opp);
-			pr_err("unable to find OPP for 1.2Gz\n");
-		}
-		else
-		{
-			printk(KERN_ERR"[1.2GHz support success] %d\n",tnt_opp);
-			opp_enable(tnt_opp);
-		}
-	}
 
 	dev = omap2_get_iva_device();
 	if (dev)

@@ -215,8 +215,8 @@ static int omap_cpu_init(struct cpufreq_policy *policy)
 							VERY_HI_RATE) / 1000;
 	}
 
-	policy->min = 307200;
-	policy->max = 1228000;
+	policy->min = policy->cpuinfo.min_freq;
+	policy->max = policy->cpuinfo.max_freq;
 	policy->cur = omap_getspeed(policy->cpu);
 
 	/* FIXME: what's the actual transition time? */

@@ -397,17 +397,14 @@ static struct omap_volt_data omap44xx_vdd_mpu_volt_data[] = {
 	{.volt_nominal = 1300000, .sr_errminlimit = 0xFA, .vp_errgain = 0x27, .abb_type = FAST_OPP},
 	{.volt_nominal = 1350000, .sr_errminlimit = 0xFA, .vp_errgain = 0x27, .abb_type = FAST_OPP},
 	{.volt_nominal = 1375000, .sr_errminlimit = 0xFA, .vp_errgain = 0x27, .abb_type = FAST_OPP},
+
 };
 
 static struct omap_volt_data omap44xx_vdd_iva_volt_data[] = {
 	{.volt_nominal = 928000, .sr_errminlimit = 0xF4, .vp_errgain = 0x0C, .abb_type = NOMINAL_OPP},
 	{.volt_nominal = 930000, .sr_errminlimit = 0xF4, .vp_errgain = 0x0C, .abb_type = NOMINAL_OPP},
 	{.volt_nominal = 1100000, .sr_errminlimit = 0xF9, .vp_errgain = 0x16, .abb_type = NOMINAL_OPP},
-#ifdef CONFIG_OMAP_ABB_DEFAULT_IVA_FBB
 	{.volt_nominal = 1300000, .sr_errminlimit = 0xFA, .vp_errgain = 0x23, .abb_type = FAST_OPP},
-#else
-	{.volt_nominal = 1300000, .sr_errminlimit = 0xFA, .vp_errgain = 0x23, .abb_type = NOMINAL_OPP},
-#endif
 };
 
 static struct omap_volt_data omap44xx_vdd_core_volt_data[] = {

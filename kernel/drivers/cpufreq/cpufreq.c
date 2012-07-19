@@ -724,6 +724,33 @@ static ssize_t show_scaling_setspeed(struct cpufreq_policy *policy, char *buf)
 	return policy->governor->show_setspeed(policy, buf);
 }
 
+static ssize_t show_boost_cpufreq(struct cpufreq_policy *policy, char *buf)
+{
+	if (!policy->governor || !policy->governor->boost_cpu_freq)
+		return sprintf(buf, "<unsupported>\n");
+
+	return sprintf(buf, "%d\n", 0);
+}
+
+static ssize_t store_boost_cpufreq(struct cpufreq_policy *policy,
+					const char *buf, size_t count)
+{
+	unsigned int boost = 0;
+	unsigned int ret;
+
+	if (!policy->governor)
+		return -EINVAL;
+
+	ret = sscanf(buf, "%u", &boost);
+	if (ret != 1)
+		return -EINVAL;
+
+	/* call policy-gov-boost functionality */
+	policy->governor->boost_cpu_freq(policy);
+
+	return count;
+
+}
 /**
  * show_scaling_driver - show the current cpufreq HW/BIOS limitation
  */
@@ -1117,8 +1144,8 @@ static int cpufreq_add_dev(struct sys_device *sys_dev)
 		goto err_unlock_policy;
 
 	}
-	policy->user_policy.min = 307200;
-	policy->user_policy.max = 1228000;
+	policy->user_policy.min = 350000;
+	policy->user_policy.max = 1200000;
 
 	blocking_notifier_call_chain(&cpufreq_policy_notifier_list,
 				     CPUFREQ_START, policy);

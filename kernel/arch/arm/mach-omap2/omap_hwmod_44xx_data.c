@@ -4285,7 +4285,7 @@ static u32 omap44xx_sr_core_efuse_offs[] = {
 };
 
 static u32 omap44xx_sr_core_test_nvalues[] = {
-	0x0, 0x0, 0x0
+	0x0, 0x0, 0x0, 0x0
 };
 
 static struct omap_sr_dev_data omap44xx_sr_core_dev_attr = {
@@ -4343,8 +4343,8 @@ static struct omap_hwmod_ocp_if *omap44xx_smartreflex_iva_slaves[] = {
 };
 
 static u32 omap44xx_sr_iva_efuse_offs[] = {
-	OMAP44XX_CONTROL_FUSE_IVA_OPP50, OMAP44XX_CONTROL_FUSE_IVA_OPP50,
-	OMAP44XX_CONTROL_FUSE_IVA_OPP100, OMAP44XX_CONTROL_FUSE_IVA_OPPTURBO,
+	OMAP44XX_CONTROL_FUSE_IVA_OPP50, OMAP44XX_CONTROL_FUSE_IVA_OPP100,
+	OMAP44XX_CONTROL_FUSE_IVA_OPPTURBO, OMAP44XX_CONTROL_FUSE_IVA_OPPNITRO,
 };
 
 static u32 omap44xx_sr_iva_test_nvalues[] = {

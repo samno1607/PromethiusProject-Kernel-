@@ -13,7 +13,7 @@
 #include <mach/emif.h>
 
 const struct lpddr2_timings timings_samsung_400_mhz = {
-	.max_freq	= 500000000,
+	.max_freq	= 550000000,
 	.RL		= 11,
 	.tRPab		= 21,
 	.tRCD		= 18,
