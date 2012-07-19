@@ -108,7 +108,6 @@ static struct dbs_tuners {
 	.hotplug_load_index =		0,
 	.ignore_nice =			0,
 	.io_is_busy =			0,
-	.boost_timeout = 0,
 };
 
 /*
@@ -158,20 +157,22 @@ show_one(io_is_busy, io_is_busy);
 show_one(boost_timeout, boost_timeout);
 
 static ssize_t store_boost_timeout(struct kobject *a, struct attribute *b,
-				   const char *buf, size_t count)
+const char *buf, size_t count)
 {
-	unsigned int input;
-	int ret;
-	ret = sscanf(buf, "%u", &input);
-	if (ret != 1)
-		return -EINVAL;
+        unsigned int input;
+        int ret;
+        ret = sscanf(buf, "%u", &input);
+        if (ret != 1)
+                return -EINVAL;
 
-	mutex_lock(&dbs_mutex);
-	dbs_tuners_ins.boost_timeout = input;
-	mutex_unlock(&dbs_mutex);
+        mutex_lock(&dbs_mutex);
+        dbs_tuners_ins.boost_timeout = input;
+        mutex_unlock(&dbs_mutex);
 
-	return count;
+        return count;
 }
+
+
 
 static ssize_t store_sampling_rate(struct kobject *a, struct attribute *b,
 				   const char *buf, size_t count)
@@ -404,9 +405,11 @@ static struct attribute_group dbs_attr_group = {
 };
 
 /************************** sysfs end ************************/
-
+extern int cosmo_panel_suspend_flag;
 static void dbs_check_cpu(struct cpu_dbs_info_s *this_dbs_info)
 {
+	extern bool in_dpll_cascading;
+
 	/* combined load of all enabled CPUs */
 	unsigned int total_load = 0;
 	/* single largest CPU load */
@@ -423,6 +426,8 @@ static void dbs_check_cpu(struct cpu_dbs_info_s *this_dbs_info)
 	unsigned int index = 0;
 	unsigned int i, j;
 
+	static int overload_cnt = 0;
+	
 	policy = this_dbs_info->cur_policy;
 
 	/*
@@ -507,6 +512,7 @@ static void dbs_check_cpu(struct cpu_dbs_info_s *this_dbs_info)
 		dbs_tuners_ins.hotplug_load_index = 0;
 
 	/* check for frequency increase */
+#if 0
 	if (avg_load > dbs_tuners_ins.up_threshold) {
 		/* should we enable auxillary CPUs? */
 		if (num_online_cpus() < 2 && hotplug_in_avg_load >
@@ -514,23 +520,46 @@ static void dbs_check_cpu(struct cpu_dbs_info_s *this_dbs_info)
 			cpu_up(1);
 			goto out;
 		}
+#else
+	if ((max_load > dbs_tuners_ins.up_threshold) || 
+		     (avg_load > dbs_tuners_ins.up_threshold)) {
+		if(in_dpll_cascading && overload_cnt < 2){	// check overloading case
+			overload_cnt++;
+			goto out;
+		}
+
+		overload_cnt = 0;
+		
+		/* should we enable auxillary CPUs? */
+		if (!in_dpll_cascading && num_online_cpus() < 2 && hotplug_in_avg_load >
+				dbs_tuners_ins.up_threshold) {
+			cpu_up(1);
+			goto out;
+		}
+#endif
 
 		/* increase to highest frequency supported */
-		if (policy->cur < policy->max)
+		if (policy->cur < policy->max) {
+		mutex_lock(&this_dbs_info->timer_mutex);
 			__cpufreq_driver_target(policy, policy->max,
 					CPUFREQ_RELATION_H);
+			mutex_unlock(&this_dbs_info->timer_mutex);
+                 }
 
 		goto out;
 	}
+
+	overload_cnt = 0;
 
 	/* check for frequency decrease */
 	if (avg_load < dbs_tuners_ins.down_threshold) {
 		/* are we at the minimum frequency already? */
 		if (policy->cur == policy->min) {
 			/* should we disable auxillary CPUs? */
-			if (num_online_cpus() > 1 && hotplug_out_avg_load <
-					dbs_tuners_ins.down_threshold) {
+			if (num_online_cpus() > 1 && hotplug_out_avg_load < dbs_tuners_ins.down_threshold) {
+				#if 1 	 	
 				cpu_down(1);
+				#endif
 			}
 			goto out;
 		}
@@ -543,9 +572,15 @@ static void dbs_check_cpu(struct cpu_dbs_info_s *this_dbs_info)
 			goto out;
 		}
 
+		mutex_lock(&this_dbs_info->timer_mutex);//gyeyoung patch
 		__cpufreq_driver_target(policy,
 				this_dbs_info->freq_table[index].frequency,
 				CPUFREQ_RELATION_L);
+		mutex_unlock(&this_dbs_info->timer_mutex);//gyeyoung patch
+
+	   	if (num_online_cpus() > 1 && in_dpll_cascading) {
+   			cpu_down(1);
+	   	}
 	}
 out:
 	mutex_unlock(&dbs_mutex);
@@ -557,21 +592,22 @@ static void do_dbs_timer(struct work_struct *work)
 	struct cpu_dbs_info_s *dbs_info =
 		container_of(work, struct cpu_dbs_info_s, work.work);
 	unsigned int cpu = dbs_info->cpu;
+
 	int delay = 0;
 
-	mutex_lock(&dbs_info->timer_mutex);
-	if (!dbs_info->boost_applied) {
-		dbs_check_cpu(dbs_info);
-		/* We want all related CPUs to do sampling nearly on same jiffy */
-		delay = usecs_to_jiffies(dbs_tuners_ins.sampling_rate);
-	} else {
-		delay = usecs_to_jiffies(dbs_tuners_ins.boost_timeout);
-		dbs_info->boost_applied = 0;
-		if (num_online_cpus() < 2)
-			cpu_up(1);
-	}
-	queue_delayed_work_on(cpu, khotplug_wq, &dbs_info->work, delay);
-	mutex_unlock(&dbs_info->timer_mutex);
+//      mutex_lock(&dbs_info->timer_mutex);
+        if (!dbs_info->boost_applied) {
+                dbs_check_cpu(dbs_info);
+                /* We want all related CPUs to do sampling nearly on same jiffy */
+                delay = usecs_to_jiffies(dbs_tuners_ins.sampling_rate);
+       } else {
+                delay = usecs_to_jiffies(dbs_tuners_ins.boost_timeout);
+                dbs_info->boost_applied = 0;
+                if (num_online_cpus() < 2)
+                   cpu_up(1);
+       }
+        queue_delayed_work_on(cpu, khotplug_wq, &dbs_info->work, delay);
+//      mutex_unlock(&dbs_info->timer_mutex);
 }
 
 static inline void dbs_timer_init(struct cpu_dbs_info_s *dbs_info)
@@ -581,8 +617,8 @@ static inline void dbs_timer_init(struct cpu_dbs_info_s *dbs_info)
 	delay -= jiffies % delay;
 
 	INIT_DELAYED_WORK_DEFERRABLE(&dbs_info->work, do_dbs_timer);
-	if (!dbs_info->boost_applied)
-		delay = usecs_to_jiffies(dbs_tuners_ins.boost_timeout);
+        if (!dbs_info->boost_applied)
+                delay = usecs_to_jiffies(dbs_tuners_ins.boost_timeout);
 	queue_delayed_work_on(dbs_info->cpu, khotplug_wq, &dbs_info->work,
 	delay);
 }
@@ -626,10 +662,6 @@ static int cpufreq_governor_dbs(struct cpufreq_policy *policy,
 			dbs_tuners_ins.hotplug_load_history = kmalloc(
 					(sizeof(unsigned int) * max_periods),
 					GFP_KERNEL);
-			if (!dbs_tuners_ins.hotplug_load_history) {
-				WARN_ON(1);
-				return -ENOMEM;
-			}
 			for (i = 0; i < max_periods; i++)
 				dbs_tuners_ins.hotplug_load_history[i] = 50;
 		}
@@ -647,8 +679,8 @@ static int cpufreq_governor_dbs(struct cpufreq_policy *policy,
 				return rc;
 			}
 		}
-		if (!dbs_tuners_ins.boost_timeout)
-			dbs_tuners_ins.boost_timeout =  dbs_tuners_ins.sampling_rate * 30;
+                if (!dbs_tuners_ins.boost_timeout)
+                        dbs_tuners_ins.boost_timeout = dbs_tuners_ins.sampling_rate * 30;
 		mutex_unlock(&dbs_mutex);
 
 		mutex_init(&this_dbs_info->timer_mutex);
@@ -689,24 +721,24 @@ static int cpufreq_governor_dbs(struct cpufreq_policy *policy,
 
 static int hotplug_boost(struct cpufreq_policy *policy)
 {
-	unsigned int cpu = policy->cpu;
-	struct cpu_dbs_info_s *this_dbs_info;
+        unsigned int cpu = policy->cpu;
+        struct cpu_dbs_info_s *this_dbs_info;
 
-	this_dbs_info = &per_cpu(hp_cpu_dbs_info, cpu);
+        this_dbs_info = &per_cpu(hp_cpu_dbs_info, cpu);
 
 #if 0
-	/* Already at max? */
-	if (policy->cur == policy->max)
-		return;
+        /* Already at max? */
+        if (policy->cur == policy->max)
+        return;
 #endif
 
-	mutex_lock(&this_dbs_info->timer_mutex);
-	this_dbs_info->boost_applied = 1;
-	__cpufreq_driver_target(policy, policy->max,
-		CPUFREQ_RELATION_H);
-	mutex_unlock(&this_dbs_info->timer_mutex);
+        mutex_lock(&this_dbs_info->timer_mutex);
+        this_dbs_info->boost_applied = 1;
+        __cpufreq_driver_target(policy, policy->max,
+                CPUFREQ_RELATION_H);
+        mutex_unlock(&this_dbs_info->timer_mutex);
 
-	return 0;
+return 0;
 }
 static int __init cpufreq_gov_dbs_init(void)
 {
